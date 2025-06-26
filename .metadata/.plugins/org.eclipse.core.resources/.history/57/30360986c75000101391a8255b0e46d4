@@ -1,0 +1,117 @@
+package Tienda;
+import static ui.main.*;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
+
+public class jdListaDeCera extends JDialog implements ActionListener {
+	private JButton btnCerrar;
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		try {
+			jdListaDeCera dialog = new jdListaDeCera();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Create the dialog.
+	 */
+	public jdListaDeCera() {
+		setTitle("Lista de Cerámicos");
+		setBounds(100, 100, 450, 300);
+		getContentPane().setLayout(null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 11, 414, 206);
+		getContentPane().add(scrollPane);
+		
+		JTextArea txaResultado = new JTextArea();
+		scrollPane.setViewportView(txaResultado);
+		
+		JButton btnCerrar = new JButton("CERRAR");
+		btnCerrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource()==btnCerrar) {
+					closed();
+			}
+			}
+		});
+		btnCerrar.setBounds(119, 228, 89, 23);
+		getContentPane().add(btnCerrar);
+		
+		JButton btnListar = new JButton("LISTAR");
+		btnListar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				txaResultado.setText("LISTADO DE CERÁMICOS"+"\n");
+				txaResultado.append("Modelo       :   "+modelo0+"\n");
+				txaResultado.append("Precio       :    "+precio0+"\n");
+				txaResultado.append("Ancho (cm)   :    "+ancho0+"\n");
+				txaResultado.append("Largo (cm)   :    "+largo0+"\n");
+				txaResultado.append("Espesor (mm) :    "+espesor0+"\n");
+				txaResultado.append("Contenido    :    "+contenido0+"\n"+"\n");
+				
+				txaResultado.append("Modelo       :   "+modelo1+"\n");
+				txaResultado.append("Precio       :    "+precio1+"\n");
+				txaResultado.append("Ancho (cm)   :    "+ancho1+"\n");
+				txaResultado.append("Largo (cm)   :    "+largo1+"\n");
+				txaResultado.append("Espesor (mm) :    "+espesor1+"\n");
+				txaResultado.append("Contenido    :    "+contenido1+"\n"+"\n");
+				
+				txaResultado.append("Modelo       :   "+modelo2+"\n");
+				txaResultado.append("Precio       :    "+precio2+"\n");
+				txaResultado.append("Ancho (cm)   :    "+ancho2+"\n");
+				txaResultado.append("Largo (cm)   :    "+largo2+"\n");
+				txaResultado.append("Espesor (mm) :    "+espesor2+"\n");
+				txaResultado.append("Contenido    :    "+contenido2+"\n"+"\n");
+				
+				txaResultado.append("Modelo       :   "+modelo3+"\n");
+				txaResultado.append("Precio       :    "+precio3+"\n");
+				txaResultado.append("Ancho (cm)   :    "+ancho3+"\n");
+				txaResultado.append("Largo (cm)   :    "+largo3+"\n");
+				txaResultado.append("Espesor (mm) :    "+espesor3+"\n");
+				txaResultado.append("Contenido    :    "+contenido3+"\n"+"\n");
+				
+				txaResultado.append("Modelo       :   "+modelo4+"\n");
+				txaResultado.append("Precio       :    "+precio4+"\n");
+				txaResultado.append("Ancho (cm)   :    "+ancho4+"\n");
+				txaResultado.append("Largo (cm)   :    "+largo4+"\n");
+				txaResultado.append("Espesor (mm) :    "+espesor4+"\n");
+				txaResultado.append("Contenido    :    "+contenido4+"\n");
+						
+			}
+		});
+		btnListar.setBounds(218, 228, 89, 23);
+		getContentPane().add(btnListar);
+	}
+	
+
+	
+	
+	
+	
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+	}
+	private void closed(){
+		this.dispose();
+		}
+	
+	
+}

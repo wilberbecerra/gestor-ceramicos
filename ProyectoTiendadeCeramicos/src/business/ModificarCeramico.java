@@ -1,0 +1,250 @@
+package business;
+
+import static ui.main.*;
+
+import java.awt.BorderLayout;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+
+public class ModificarCeramico extends JDialog implements ActionListener {
+
+	private final JPanel contentPanel = new JPanel();
+	private JLabel lblNewLabel;
+	private JLabel lblNewLabel_1;
+	private JLabel lblNewLabel_2;
+	private JLabel lblNewLabel_3;
+	private JLabel lblNewLabel_4;
+	private JLabel lblNewLabel_5;
+	private JTextField txtPrecio;
+	private JTextField txtAncho;
+	private JTextField txtLargo;
+	private JTextField txtEspesor;
+	private JTextField txtContenido;
+	private JComboBox cboModelo;
+	private JButton btnCerrar;
+	private JButton btnGrabar;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		try {
+			ModificarCeramico dialog = new ModificarCeramico();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Create the dialog.
+	 */
+	public ModificarCeramico() {
+		setTitle("Modificar Cer\u00E1mico");
+		setBounds(100, 100, 450, 300);
+		getContentPane().setLayout(new BorderLayout());
+		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		contentPanel.setLayout(null);
+		
+		lblNewLabel = new JLabel("Modelo");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNewLabel.setBounds(38, 26, 96, 13);
+		contentPanel.add(lblNewLabel);
+		
+		lblNewLabel_1 = new JLabel("Precio (S/)");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNewLabel_1.setBounds(38, 65, 96, 13);
+		contentPanel.add(lblNewLabel_1);
+		
+		lblNewLabel_2 = new JLabel("Ancho (cm)");
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNewLabel_2.setBounds(38, 104, 81, 13);
+		contentPanel.add(lblNewLabel_2);
+		
+		lblNewLabel_3 = new JLabel("Largo (cm)");
+		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNewLabel_3.setBounds(38, 143, 81, 13);
+		contentPanel.add(lblNewLabel_3);
+		
+		lblNewLabel_4 = new JLabel("Espesor (mm)");
+		lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNewLabel_4.setBounds(38, 182, 96, 13);
+		contentPanel.add(lblNewLabel_4);
+		
+		lblNewLabel_5 = new JLabel("Contenido");
+		lblNewLabel_5.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNewLabel_5.setBounds(38, 221, 96, 13);
+		contentPanel.add(lblNewLabel_5);
+		
+		txtPrecio = new JTextField();
+		txtPrecio.setBounds(158, 63, 114, 19);
+		contentPanel.add(txtPrecio);
+		txtPrecio.setColumns(10);
+		
+		txtAncho = new JTextField();
+		txtAncho.setBounds(158, 103, 114, 19);
+		contentPanel.add(txtAncho);
+		txtAncho.setColumns(10);
+		
+		txtLargo = new JTextField();
+		txtLargo.setBounds(158, 143, 114, 19);
+		contentPanel.add(txtLargo);
+		txtLargo.setColumns(10);
+		
+		txtEspesor = new JTextField();
+		txtEspesor.setBounds(158, 183, 114, 19);
+		contentPanel.add(txtEspesor);
+		txtEspesor.setColumns(10);
+		
+		txtContenido = new JTextField();
+		txtContenido.setBounds(158, 223, 114, 19);
+		contentPanel.add(txtContenido);
+		txtContenido.setColumns(10);
+		
+		cboModelo = new JComboBox();
+		cboModelo.addActionListener(this);
+		cboModelo.setModel(new DefaultComboBoxModel(new String[] 
+		{modelo0,modelo1,modelo2,
+		modelo3,modelo4}));
+		cboModelo.setBounds(158, 21, 114, 21);
+		contentPanel.add(cboModelo);
+		
+		btnCerrar = new JButton("Cerrar");
+		btnCerrar.addActionListener(this);
+		btnCerrar.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnCerrar.setBounds(307, 24, 85, 21);
+		contentPanel.add(btnCerrar);
+		
+		btnGrabar = new JButton("Grabar");
+		btnGrabar.addActionListener(this);
+		btnGrabar.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		btnGrabar.setBounds(307, 65, 85, 21);
+		contentPanel.add(btnGrabar);
+		
+		asignarModelo(0);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnCerrar) {
+			cerrar();
+		}
+		if (e.getSource() == cboModelo) {
+			int indice=cboModelo.getSelectedIndex();
+			asignarModelo(indice);
+		}
+		if (e.getSource() == btnGrabar) {
+			int indice=cboModelo.getSelectedIndex();
+			modificar(indice);
+		}
+
+	}
+	private void asignarModelo(int indice) {
+		switch (indice) {
+		case 0:
+			txtPrecio.setText(Double.toString(precio0));
+			txtAncho.setText(Double.toString(ancho0));
+			txtEspesor.setText(Double.toString(espesor0));
+			txtLargo.setText(Double.toString(largo0));
+			txtContenido.setText(Integer.toString(contenido0));
+			break;
+		case 1:
+			txtPrecio.setText(Double.toString(precio1));
+			txtAncho.setText(Double.toString(ancho1));
+			txtEspesor.setText(Double.toString(espesor1));
+			txtLargo.setText(Double.toString(largo1));
+			txtContenido.setText(Integer.toString(contenido1));
+			break;
+		case 2:
+			txtPrecio.setText(Double.toString(precio2));
+			txtAncho.setText(Double.toString(ancho2));
+			txtEspesor.setText(Double.toString(espesor2));
+			txtLargo.setText(Double.toString(largo2));
+			txtContenido.setText(Integer.toString(contenido2));
+			break;
+		case 3:
+			txtPrecio.setText(Double.toString(precio3));
+			txtAncho.setText(Double.toString(ancho3));
+			txtEspesor.setText(Double.toString(espesor3));
+			txtLargo.setText(Double.toString(largo3));
+			txtContenido.setText(Integer.toString(contenido3));
+			break;
+		case 4:
+			txtPrecio.setText(Double.toString(precio4));
+			txtAncho.setText(Double.toString(ancho4));
+			txtEspesor.setText(Double.toString(espesor4));
+			txtLargo.setText(Double.toString(largo4));
+			txtContenido.setText(Integer.toString(contenido4));
+			break;
+		default:
+			break;
+			
+		}
+	
+	}
+	
+	private void modificar(int indice) {
+		double precio = Double.parseDouble(txtPrecio.getText());
+		double ancho = Double.parseDouble(txtAncho.getText());
+		double largo = Double.parseDouble(txtLargo.getText());
+		double espesor = Double.parseDouble(txtEspesor.getText());
+		int contenido = Integer.parseInt(txtContenido.getText());
+		
+		switch (indice) {
+		case 0 : 
+			precio0=precio;
+			ancho0=ancho;
+			largo0=largo;
+			espesor0=espesor;
+			contenido0=contenido;
+			break;
+		case 1:
+			precio1=precio;
+			ancho1=ancho;
+			largo1=largo;
+			espesor1=espesor;
+			contenido1=contenido;
+			break;
+		case 2:
+			precio2=precio;
+			ancho2=ancho;
+			largo2=largo;
+			espesor2=espesor;
+			contenido2=contenido;
+			break;
+		case 3: 
+			precio3=precio;
+			ancho3=ancho;
+			largo3=largo;
+			espesor3=espesor;
+			contenido3=contenido;
+			break;
+		case 4:
+			precio4=precio;
+			ancho4=ancho;
+			largo4=largo;
+			espesor4=espesor;
+			contenido4=contenido;	
+		}
+		
+		cerrar();
+	}
+	
+	private void cerrar() {
+		this.dispose();
+	}
+
+}

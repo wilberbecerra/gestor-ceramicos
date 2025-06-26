@@ -1,0 +1,89 @@
+package ui;
+
+import static ui.main.cuotaDiaria;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class jdAcercaDe extends JDialog implements ActionListener {
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		try {
+			jdAcercaDe dialog = new jdAcercaDe();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Create the dialog.
+	 */
+	public jdAcercaDe() {
+		setBounds(100, 100, 450, 300);
+		getContentPane().setLayout(null);
+		{
+			JLabel lblNewLabel = new JLabel("TIENDA ");
+			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 26));
+			lblNewLabel.setBounds(133, 11, 156, 25);
+			getContentPane().add(lblNewLabel);
+		}
+		{
+			JLabel lblNewLabel_1 = new JLabel("_______________________________________________________");
+			lblNewLabel_1.setBounds(24, 29, 400, 25);
+			getContentPane().add(lblNewLabel_1);
+		}
+		{
+			JLabel lblNewLabel_5 = new JLabel("Versión: 1.0.0\r\n"
+					+ "Desarrollado por: Wilber Becerra");
+			lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
+			lblNewLabel_5.setFont(new Font("Tahoma", Font.BOLD, 13));
+			lblNewLabel_5.setBounds(152, 137, 110, 14);
+			getContentPane().add(lblNewLabel_5);
+		}
+		{
+			JButton btnCerrar = new JButton("Cerrar");
+			btnCerrar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (e.getSource()==btnCerrar) {
+						closed();
+				}	
+				}
+			});
+			btnCerrar.setFont(new Font("Tahoma", Font.PLAIN, 12));
+			btnCerrar.setBounds(165, 188, 89, 23);
+			getContentPane().add(btnCerrar);
+		}
+	}
+	
+	
+	
+	
+	private void closed(){
+		this.dispose();
+		}
+	
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+}

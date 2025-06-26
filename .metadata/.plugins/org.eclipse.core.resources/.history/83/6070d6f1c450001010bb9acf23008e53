@@ -1,0 +1,65 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Login extends JFrame implements ActionListener {
+    
+    // Definir los componentes
+    private JTextField txtUsername;
+    private JPasswordField txtPassword;
+    private JButton btnLogin;
+    private JLabel lblMessage;
+    
+    public Login() {
+        // Configuración de la ventana principal
+        setTitle("Login");
+        setLayout(new FlowLayout());
+        setSize(300, 150);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Crear los componentes
+        JLabel lblUsername = new JLabel("Usuario: ");
+        txtUsername = new JTextField(20);
+        
+        JLabel lblPassword = new JLabel("Contraseña: ");
+        txtPassword = new JPasswordField(20);
+        
+        btnLogin = new JButton("Iniciar sesión");
+        lblMessage = new JLabel("");
+
+        // Añadir los componentes al JFrame
+        add(lblUsername);
+        add(txtUsername);
+        add(lblPassword);
+        add(txtPassword);
+        add(btnLogin);
+        add(lblMessage);
+
+        // Asignar el evento del botón
+        btnLogin.addActionListener(this);
+
+        // Hacer visible la ventana
+        setVisible(true);
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // Obtener las credenciales ingresadas
+        String username = txtUsername.getText();
+        String password = new String(txtPassword.getPassword());
+        
+        // Verificar las credenciales (usuario: WilberBecerra, contraseña: password123)
+        if (username.equals("WilberBecerra") && password.equals("password123")) {
+            lblMessage.setText("¡Bienvenido!");
+            lblMessage.setForeground(Color.GREEN);
+        } else {
+            lblMessage.setText("Credenciales incorrectas.");
+            lblMessage.setForeground(Color.RED);
+        }
+    }
+
+    public static void main(String[] args) {
+        // Ejecutar la aplicación
+        new Login();
+    }
+}

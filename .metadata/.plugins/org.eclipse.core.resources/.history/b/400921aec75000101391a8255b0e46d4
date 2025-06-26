@@ -1,0 +1,152 @@
+package Tienda;
+import static ui.main.*;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JTextField;
+
+public class ConfigurarObsequios extends JDialog implements ActionListener{
+
+	private final JPanel contentPanel = new JPanel();
+	private JTextField txtTipObs;
+	private JTextField txtObsCan1;
+	private JTextField txtObsCan2;
+	private JTextField txtObsCan3;
+	private JButton btnAceptar;
+	private JButton btnCancelar;
+	
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		try {
+			ConfigurarObsequios dialog = new ConfigurarObsequios();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Create the dialog.
+	 */
+	public ConfigurarObsequios() {
+		setTitle("Configurar Obsequios");
+		setBounds(100, 100, 450, 235);
+		getContentPane().setLayout(new BorderLayout());
+		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		contentPanel.setLayout(null);
+		{
+			JLabel lblNewLabel = new JLabel("Tipo de Obsequio");
+			lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			lblNewLabel.setBounds(22, 28, 131, 13);
+			contentPanel.add(lblNewLabel);
+		}
+		{
+			JLabel lblA = new JLabel("1 a 5 unidades");
+			lblA.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			lblA.setBounds(22, 70, 131, 13);
+			contentPanel.add(lblA);
+		}
+		{
+			JLabel lblA_1 = new JLabel("6 a 10 unidades");
+			lblA_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			lblA_1.setBounds(22, 112, 131, 13);
+			contentPanel.add(lblA_1);
+		}
+		{
+			JLabel lblAMs = new JLabel("11 a m\u00E1s unidades");
+			lblAMs.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			lblAMs.setBounds(22, 154, 131, 13);
+			contentPanel.add(lblAMs);
+		}
+		{
+			txtTipObs = new JTextField();
+			txtTipObs.setBounds(163, 28, 96, 19);
+			contentPanel.add(txtTipObs);
+			txtTipObs.setColumns(10);
+		}
+		{
+			txtObsCan1 = new JTextField();
+			txtObsCan1.setBounds(163, 70, 96, 19);
+			contentPanel.add(txtObsCan1);
+			txtObsCan1.setColumns(10);
+		}
+		{
+			txtObsCan2 = new JTextField();
+			txtObsCan2.setBounds(163, 112, 96, 19);
+			contentPanel.add(txtObsCan2);
+			txtObsCan2.setColumns(10);
+		}
+		{
+			txtObsCan3 = new JTextField();
+			txtObsCan3.setBounds(163, 154, 96, 19);
+			contentPanel.add(txtObsCan3);
+			txtObsCan3.setColumns(10);
+		}
+		{
+			btnAceptar = new JButton("Aceptar");
+			btnAceptar.addActionListener(this);
+			btnAceptar.setFont(new Font("Tahoma", Font.PLAIN, 12));
+			btnAceptar.setBounds(289, 26, 102, 21);
+			contentPanel.add(btnAceptar);
+		}
+		{
+			btnCancelar = new JButton("Cancelar");
+			btnCancelar.addActionListener(this);
+			btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 12));
+			btnCancelar.setBounds(289, 68, 102, 21);
+			contentPanel.add(btnCancelar);
+		}
+		mostrarObsequio();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if (e.getSource() == btnCancelar) {
+			cancelar();
+		}
+		if (e.getSource() == btnAceptar) {
+			configurarObsequios();
+		}
+
+	}
+	private void cancelar() {
+		this.dispose();
+	}
+	private void mostrarObsequio() {
+		
+		txtTipObs.setText(tipoObsequio);
+		txtObsCan1.setText(Integer.toString(obsequioCantidad1));
+		txtObsCan2.setText(Integer.toString(obsequioCantidad2));
+		txtObsCan3.setText(Integer.toString(obsequioCantidad3));	
+	}
+
+	private void configurarObsequios() {
+		tipoObsequio = txtTipObs.getText();
+		int obs1= Integer.parseInt(txtObsCan1.getText());
+		int obs2= Integer.parseInt(txtObsCan2.getText());
+		int obs3= Integer.parseInt(txtObsCan3.getText());
+		
+		
+		obsequioCantidad1=obs1;
+		obsequioCantidad2=obs2;
+		obsequioCantidad3=obs3;
+		
+		cancelar();
+	}
+}

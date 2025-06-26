@@ -1,0 +1,87 @@
+package ui;
+
+import static ui.main.*;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.JTextField;
+import java.awt.Font;
+
+public class jdCuotaDiaria extends JDialog {
+	private JTextField txtCuotaDiaria;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		try {
+			jdCuotaDiaria dialog = new jdCuotaDiaria();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Create the dialog.
+	 */
+	public jdCuotaDiaria() {
+		setTitle("Configurar Cuota Diaria");
+		setBounds(100, 100, 450, 300);
+		getContentPane().setLayout(null);
+		{
+			JLabel lblNewLabel = new JLabel("Cuota diaria esperada (S/): ");
+			lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			lblNewLabel.setBounds(10, 29, 206, 14);
+			getContentPane().add(lblNewLabel);
+		}
+		{
+			txtCuotaDiaria = new JTextField(Double.toString(cuotaDiaria));
+			txtCuotaDiaria.setBounds(209, 27, 80, 20);
+			getContentPane().add(txtCuotaDiaria);
+			txtCuotaDiaria.setColumns(10);
+		}
+		{
+			JButton btnAceptar = new JButton("Aceptar");
+			btnAceptar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+						cuotaDiaria=Double.parseDouble(txtCuotaDiaria.getText());;
+						closed();
+				}
+			});
+			btnAceptar.setBounds(299, 25, 89, 23);
+			getContentPane().add(btnAceptar);
+		}
+		{
+			JButton btnCancelar = new JButton("Cancelar");
+			btnCancelar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (e.getSource()==btnCancelar) {
+						closed();
+				}
+				}
+			});
+			btnCancelar.setBounds(299, 59, 89, 23);
+			getContentPane().add(btnCancelar);
+		}
+	}
+	
+private void closed(){
+	this.dispose();
+	}
+	
+	
+	
+
+}
