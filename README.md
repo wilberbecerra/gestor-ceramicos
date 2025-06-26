@@ -1,2 +1,2 @@
-# gestor-tienda-ceramicos
-Desarrollo de un programa en Java para optimizar y automatizar la gestión de ventas, inventarios y clientes en tiendas de cerámicos. El sistema permite el control de stock, la gestión de productos y el análisis de ventas, mejorando la toma de decisiones y facilitando la facturación y el seguimiento de compras.
+# Sistema de Gestión Integral para Tienda de Cerámicos
+El Sistema de Gestión de Tienda de Cerámicos está diseñado para optimizar y automatizar el proceso de ventas, gestión de inventarios y mantenimiento de productos en empresas dedicadas a la venta de cerámicos. La aplicación permite registrar ventas diarias, monitorear el desempeño de ventas, modificar precios, y gestionar productos de manera eficiente. Además, ofrece la generación de reportes detallados sobre ventas, comparativas de precios y estadísticas clave, lo que facilita la toma de decisiones informadas.
