@@ -435,11 +435,18 @@ public final class StoreViews {
     }
 
     private static JPanel about() {
-        JPanel page = page("Acerca del proyecto", "Aplicación académica de escritorio.", null);
-        JTextArea text = new JTextArea("Tienda de cerámicos es el primer proyecto en Java de Wilber Becerra. Reúne consulta y modificación de productos, cálculo de ventas con descuentos y obsequios, y reportes de la operación.\n\nLa aplicación utiliza Java Swing y mantiene los datos en memoria durante la ejecución. El catálogo y los acumulados se reinician cuando se cierra el programa.\n\nVersión original 1.0.0. Desarrollado por Wilber Becerra.");
+        JPanel page = page("Acerca del proyecto", "Versión y especificaciones de la aplicación.", null);
+        JTextArea text = new JTextArea("Versión original 1.0.0\n\n"
+                + "Aplicación de escritorio para la consulta de productos y la gestión de ventas de cerámicos.\n\n"
+                + "Lenguaje: Java, con compatibilidad Java 15.\n"
+                + "Interfaz: Java Swing y FlatLaf 3.8.\n"
+                + "Entorno de desarrollo: Eclipse IDE.\n"
+                + "Almacenamiento: datos en memoria durante la ejecución, sin base de datos.\n\n"
+                + "Funciones: consulta, modificación y listado de productos; ventas con descuentos y obsequios; reportes y configuración de reglas de venta.\n\n"
+                + "El catálogo, la configuración y los acumulados se restablecen al cerrar la aplicación.");
         text.setEditable(false); text.setLineWrap(true); text.setWrapStyleWord(true);
         text.setFont(AppTheme.font(15, false)); text.setForeground(AppTheme.MUTED);
-        text.setRows(10);
+        text.setRows(14);
         text.setBackground(AppTheme.CARD);
         text.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(AppTheme.LINE), new EmptyBorder(20, 20, 20, 40)));
