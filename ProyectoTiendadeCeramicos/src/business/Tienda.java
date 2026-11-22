@@ -1,314 +1,98 @@
 package business;
 
-import java.awt.Dialog.ModalityType;
-import java.awt.EventQueue;
-
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.awt.*;
+import java.util.EnumMap;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import ui.*;
 
-import ui.ConsultarCeramico;
-import ui.DialogSell;
-import ui.jdAcercaDe;
-import ui.jdCantidadOptima;
-import ui.jdCuotaDiaria;
-import ui.jdListaDeCera;
-import utils.ConfigurarDescuentos;
-import utils.ConfigurarObsequios;
+public class Tienda extends JFrame {
+    private final StoreViews.Context context;
+    private final JPanel workspace = AppTheme.panel(new BorderLayout());
+    private final EnumMap<ViewId, JButton> navigation = new EnumMap<>(ViewId.class);
+    private ViewId currentView;
 
-import javax.swing.UIManager;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
+    public Tienda() { this(StoreModel.shared(), "WilberBecerra"); }
 
-import static ui.main.*;
+    public Tienda(StoreModel store, String user) {
+        AppTheme.install();
+        context = new StoreViews.Context(store, this::showView);
+        setTitle("Tienda de cerámicos | Gestión de ventas");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        Rectangle work = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+        setSize(Math.min(1200, work.width), Math.min(780, work.height));
+        setMinimumSize(new Dimension(Math.min(980, work.width), Math.min(640, work.height)));
+        setLocationRelativeTo(null);
+        JPanel root = AppTheme.panel(new BorderLayout());
+        JPanel top = AppTheme.panel(new BorderLayout());
+        JPanel header = AppTheme.panel(new BorderLayout(24, 0));
+        header.setBorder(new EmptyBorder(18, 28, 18, 28));
+        header.add(AppTheme.brand(), BorderLayout.WEST);
+        JPanel account = AppTheme.panel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
+        account.add(AppTheme.label(user, 13, false, AppTheme.MUTED));
+        account.add(AppTheme.button("Cerrar sesión", "logout", false, () -> {
+            new Login(store, null).setVisible(true); dispose();
+        }));
+        header.add(account, BorderLayout.EAST); top.add(header, BorderLayout.NORTH);
+        JPanel nav = AppTheme.panel(new FlowLayout(FlowLayout.LEFT, 22, 0));
+        nav.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(1, 0, 1, 0, AppTheme.LINE), new EmptyBorder(0, 28, 0, 28)));
+        ViewId[] destinations = {ViewId.HOME, ViewId.CATALOG, ViewId.SALE, ViewId.REPORTS, ViewId.DISCOUNTS, ViewId.ABOUT};
+        String[] names = {"Inicio", "Productos", "Vender", "Reportes", "Configuración", "Acerca de"};
+        for (int i = 0; i < destinations.length; i++) {
+            final ViewId destination = destinations[i];
+            JButton button = AppTheme.button(names[i], "nav" + destination.name(), false, () -> showView(destination));
+            button.setContentAreaFilled(false); navigation.put(destination, button); nav.add(button);
+        }
+        top.add(nav, BorderLayout.SOUTH); root.add(top, BorderLayout.NORTH);
+        root.add(workspace, BorderLayout.CENTER);
+        JPanel footer = AppTheme.panel(new BorderLayout(24, 0));
+        footer.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(1, 0, 0, 0, AppTheme.LINE), new EmptyBorder(12, 28, 12, 28)));
+        footer.add(AppTheme.label("Aplicación de escritorio", 12, false, AppTheme.MUTED), BorderLayout.WEST);
+        footer.add(AppTheme.label("Los datos se conservan durante esta ejecución.", 12, false, AppTheme.MUTED), BorderLayout.EAST);
+        root.add(footer, BorderLayout.SOUTH); setContentPane(root);
+        setJMenuBar(menuBar()); showView(ViewId.HOME);
+    }
 
-import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+    public StoreViews.Context context() { return context; }
+    public ViewId currentView() { return currentView; }
 
-public class Tienda extends JFrame implements ActionListener {
+    public void showView(ViewId view) {
+        currentView = view;
+        workspace.removeAll(); workspace.add(AppTheme.scroll(StoreViews.create(view, context)), BorderLayout.CENTER);
+        ViewId group = view;
+        if (view == ViewId.CONSULT || view == ViewId.EDIT) group = ViewId.CATALOG;
+        if (view == ViewId.GIFTS || view == ViewId.OPTIMAL || view == ViewId.QUOTA) group = ViewId.DISCOUNTS;
+        for (java.util.Map.Entry<ViewId, JButton> entry : navigation.entrySet()) {
+            boolean selected = entry.getKey() == group;
+            entry.getValue().setForeground(selected ? AppTheme.PRIMARY : AppTheme.MUTED);
+            entry.getValue().setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createMatteBorder(0, 0, 3, 0, selected ? AppTheme.PRIMARY : Color.WHITE),
+                    new EmptyBorder(12, 0, 12, 0)));
+        }
+        workspace.revalidate(); workspace.repaint();
+    }
 
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	
-	// Menu
-	private JMenuItem mntmExit;
-	private JMenuItem mntmProdInfo;
-	private JMenuItem mntmProdEdit;
-	private JMenuItem mntmProdList;
-	private JMenuItem mntmSell;
-	private JMenuItem mntmReport;
-	private JMenuItem mntmConfigDisc;
-	private JMenuItem mntmConfigGift;
-	private JMenuItem mntmConfigOptimal;
-	private JMenuItem mntmConfigQuota;
-	private JMenuItem mntmAbout;
+    private JMenuBar menuBar() {
+        JMenuBar bar = new JMenuBar();
+        JMenu file = new JMenu("Archivo"); file.setMnemonic('A');
+        JMenuItem exit = new JMenuItem("Salir"); exit.addActionListener(e -> dispose()); file.add(exit); bar.add(file);
+        JMenu products = new JMenu("Mantenimiento"); products.setMnemonic('M');
+        add(products, "Consultar cerámico", ViewId.CONSULT); add(products, "Modificar cerámico", ViewId.EDIT);
+        add(products, "Listar cerámicos", ViewId.CATALOG); bar.add(products);
+        JMenu sales = new JMenu("Ventas"); sales.setMnemonic('V');
+        add(sales, "Vender", ViewId.SALE); add(sales, "Generar reportes", ViewId.REPORTS); bar.add(sales);
+        JMenu settings = new JMenu("Configuración"); settings.setMnemonic('C');
+        add(settings, "Configurar descuentos", ViewId.DISCOUNTS); add(settings, "Configurar obsequios", ViewId.GIFTS);
+        add(settings, "Configurar cantidad óptima", ViewId.OPTIMAL); add(settings, "Configurar cuota diaria", ViewId.QUOTA); bar.add(settings);
+        JMenu help = new JMenu("Ayuda"); add(help, "Acerca de la tienda", ViewId.ABOUT); bar.add(help);
+        return bar;
+    }
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		}
-		catch (Throwable e) {
-			e.printStackTrace();
-		}
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Tienda frame = new Tienda();
-					frame.setVisible(true);
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+    private void add(JMenu menu, String title, ViewId view) {
+        JMenuItem item = new JMenuItem(title); item.addActionListener(e -> showView(view)); menu.add(item);
+    }
 
-	/**
-	 * Create the frame.
-	 */
-	public Tienda() {
-		setTitle("Tienda 1.0");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 760, 465);
-		
-		JMenuBar menuBar = new JMenuBar();
-		setJMenuBar(menuBar);
-		
-		// Archivo
-		JMenu mnFile = new JMenu("Archivo");
-		menuBar.add(mnFile);
-		
-		mntmExit = new JMenuItem("Salir");
-		mntmExit.addActionListener(this);
-		mnFile.add(mntmExit);
-		
-		// Mantenimiento
-		JMenu mnMaint = new JMenu("Mantenimiento");
-		menuBar.add(mnMaint);
-		
-		mntmProdInfo = new JMenuItem("Consultar ceramico");
-		mntmProdInfo.addActionListener(this);
-		mnMaint.add(mntmProdInfo);
-		mntmProdEdit = new JMenuItem("Modificar ceramico");
-		mntmProdEdit.addActionListener(this);
-		mnMaint.add(mntmProdEdit);
-		mntmProdList = new JMenuItem("Listar ceramicos");
-		mntmProdList.addActionListener(this);
-		mnMaint.add(mntmProdList);
-		
-		// Ventas
-		JMenu mnSales = new JMenu("Ventas");
-		menuBar.add(mnSales);
-		
-		mntmSell = new JMenuItem("Vender");
-		mntmSell.addActionListener(this);
-		mnSales.add(mntmSell);
-		mntmReport = new JMenuItem("Generar Reportes");
-		mntmReport.addActionListener(this);
-		mnSales.add(mntmReport);
-		
-		// Configuracion
-		JMenu mnConfig = new JMenu("Configuracion");
-		menuBar.add(mnConfig);
-		
-		mntmConfigDisc = new JMenuItem("Configurar descuentos");
-		mntmConfigDisc.addActionListener(this);
-		mnConfig.add(mntmConfigDisc);
-		mntmConfigGift = new JMenuItem("Configurar obsequios");
-		mntmConfigGift.addActionListener(this);
-		mnConfig.add(mntmConfigGift);
-		mntmConfigOptimal = new JMenuItem("Configurar cantidad optima");
-		mntmConfigOptimal.addActionListener(this);
-		mnConfig.add(mntmConfigOptimal);
-		mntmConfigQuota = new JMenuItem("Configurar cuota diaria");
-		mntmConfigQuota.addActionListener(this);
-		mnConfig.add(mntmConfigQuota);
-
-		// Ayuda
-		JMenu mnHelp = new JMenu("Ayuda");
-		menuBar.add(mnHelp);
-		
-		mntmAbout = new JMenuItem("Acerca de Tienda");
-		mntmAbout.addActionListener(this);
-		mnHelp.add(mntmAbout);
-	
-		
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-	}
-
-	public void actionPerformed(ActionEvent e) {
-		// Archivo
-		if (e.getSource() == mntmExit)
-			exitProgram();
-		
-		// Mantenimiento
-		else if (e.getSource() == mntmProdInfo)
-			openProductInfo();
-		else if (e.getSource() == mntmProdEdit)
-			openProductEdit();
-		else if (e.getSource() == mntmProdList)
-			openProductList();
-		
-		// Ventas
-		else if (e.getSource() == mntmSell)
-			openSell();
-		else if (e.getSource() == mntmReport)
-			openReport();
-		
-		// Configuracion
-		else if (e.getSource() == mntmConfigDisc)
-			openConfigDiscount();
-		else if (e.getSource() == mntmConfigGift)
-			openConfigGift();
-		else if (e.getSource() == mntmConfigOptimal)
-			openConfigOptimal();
-		else if (e.getSource() == mntmConfigQuota)
-			openConfigQuota();
-		
-		// Ayuda
-		else if (e.getSource() == mntmAbout)
-			openAbout();
-	}
-	
-	protected void openSell() {
-		try {
-			DialogSell dialog = new DialogSell();
-			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	
-	protected void openReport() {
-		try {
-			reporteVentas dialog = new reporteVentas();
-			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	
-	protected void openConfigDiscount() {
-		try {
-			ConfigurarDescuentos dialog = new ConfigurarDescuentos();
-			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-	}
-	}
-	protected void openConfigGift() {
-		try {
-			ConfigurarObsequios dialog = new ConfigurarObsequios();
-			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	
-	protected void openConfigOptimal() {
-		try {
-			jdCantidadOptima dialog = new jdCantidadOptima();
-			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	
-	protected void openConfigQuota() {
-		try {
-			jdCuotaDiaria dialog = new jdCuotaDiaria();
-			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	
-	protected void openProductInfo() {
-		try {
-			ConsultarCeramico dialog = new ConsultarCeramico();
-			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	protected void openProductEdit() {
-		try {
-			ModificarCeramico dialog=new ModificarCeramico();
-			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		
-	}
-	
-	protected void openProductList() {
-		try {
-			jdListaDeCera dialog = new jdListaDeCera();
-			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	
-	protected void openAbout() {
-		try {
-			jdAcercaDe dialog = new jdAcercaDe();
-			dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	
-	protected void exitProgram() {
-		this.dispose();
-	}
-	private static void addPopup(Component component, final JPopupMenu popup) {
-		component.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			public void mouseReleased(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			private void showMenu(MouseEvent e) {
-				popup.show(e.getComponent(), e.getX(), e.getY());
-			}
-		});
-	}
+    public static void main(String[] args) { Login.main(args); }
 }

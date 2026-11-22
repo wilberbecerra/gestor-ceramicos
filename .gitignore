@@ -1,0 +1,6 @@
+
+# Local build outputs
+.metadata/
+**/bin/
+**/build/
+*.log

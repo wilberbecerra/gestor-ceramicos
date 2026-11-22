@@ -1,105 +1,15 @@
 package ui;
 
-import static ui.main.*;
+import ui.AppDialog;
+import ui.AppTheme;
+import ui.ViewId;
+import javax.swing.SwingUtilities;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.JTextField;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+/** Preserves the original Eclipse entry point and shares the application panel. */
+public class jdCantidadOptima extends AppDialog {
+    public jdCantidadOptima() { super("Cantidad óptima", ViewId.OPTIMAL); }
 
-
-
-public class jdCantidadOptima extends JDialog implements ActionListener {
-	private JTextField txtCantidadOptima;
-	private JButton btnCancelar;
-	private JButton btnAceptar;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			jdCantidadOptima dialog = new jdCantidadOptima();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Create the dialog.
-	 */
-	public jdCantidadOptima() {
-		setBounds(100, 100, 450, 300);
-		getContentPane().setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("Cantidad óptima de unidades vendidas:");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblNewLabel.setBounds(10, 27, 227, 14);
-		getContentPane().add(lblNewLabel);
-		
-		txtCantidadOptima = new JTextField(""+cantidadOptima);
-		txtCantidadOptima.setBounds(238, 24, 71, 20);
-		getContentPane().add(txtCantidadOptima);
-		txtCantidadOptima.setColumns(10);
-		
-		JButton btnAceptar = new JButton("Aceptar");
-		btnAceptar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			int CantidadOptima;
-			CantidadOptima=Integer.parseInt(txtCantidadOptima.getText());
-			if (e.getSource()==btnAceptar) {
-				cantidadOptima=CantidadOptima;
-				closed();
-		}	
-			}
-		});
-		btnAceptar.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btnAceptar.setBounds(319, 23, 89, 23);
-		getContentPane().add(btnAceptar);
-		
-		JButton btnCancelar = new JButton("Cancelar");
-		btnCancelar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (e.getSource()==btnCancelar) {
-					closed();
-			}
-			}
-		});
-		btnCancelar.setFont(new Font("Tahoma", Font.BOLD, 11));
-		btnCancelar.setBounds(319, 57, 89, 23);
-		getContentPane().add(btnCancelar);
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-	}
-	private void closed(){
-		this.dispose();
-		}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> { AppTheme.install(); new jdCantidadOptima().setVisible(true); });
+    }
 }

@@ -1,0 +1,5 @@
+package ui;
+
+public enum ViewId {
+    HOME, CATALOG, CONSULT, EDIT, SALE, REPORTS, DISCOUNTS, GIFTS, OPTIMAL, QUOTA, ABOUT
+}
