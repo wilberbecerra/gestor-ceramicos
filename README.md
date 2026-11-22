@@ -17,9 +17,9 @@
 
 ## El proyecto
 
-Mi primer proyecto académico en Java: una aplicación de escritorio que representa la operación de ventas de una tienda de cerámicos. Permite consultar y modificar las características de cinco modelos, calcular descuentos y obsequios por cantidad y revisar los resultados de la sesión.
+Aplicación académica de escritorio en Java que representa la operación de ventas de una tienda de cerámicos. Permite consultar y modificar las características de cinco modelos, calcular descuentos y obsequios por cantidad y revisar los resultados de la sesión.
 
-Desarrollado por **Wilber Becerra**, utiliza **Swing** para las pantallas y **FlatLaf** para la apariencia de los controles. El proyecto conserva su configuración para Eclipse y también se puede compilar desde PowerShell.
+Utiliza **Swing** para las pantallas y **FlatLaf** para la apariencia de los controles. El proyecto conserva su configuración para Eclipse y también se puede compilar desde PowerShell.
 
 ## Funcionalidades
 

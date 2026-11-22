@@ -33,7 +33,7 @@ public class Tienda extends JFrame {
                 BorderFactory.createMatteBorder(0, 0, 1, 0, AppTheme.LINE), new EmptyBorder(10, 24, 10, 24)));
         header.add(AppTheme.label("Gestión de ventas", 13, true, AppTheme.INK), BorderLayout.WEST);
         JPanel account = AppTheme.panel(new FlowLayout(FlowLayout.RIGHT, 14, 0));
-        account.add(AppTheme.label(user, 12, false, AppTheme.MUTED));
+        account.add(AppTheme.label("Sesión activa", 12, false, AppTheme.MUTED));
         JButton logout = AppTheme.button("Cerrar sesión", "logout", false, () -> {
             new Login(store, null).setVisible(true); dispose();
         });
