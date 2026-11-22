@@ -43,7 +43,7 @@ public final class StoreViews {
     private static JPanel page(String title, String description, JComponent action) {
         JPanel page = new PagePanel();
         page.setName("page");
-        page.setBorder(new EmptyBorder(28, 28, 28, 28));
+        page.setBorder(new EmptyBorder(24, 24, 24, 24));
         page.add(AppTheme.heading(title, description, action), BorderLayout.NORTH);
         return page;
     }
@@ -53,8 +53,9 @@ public final class StoreViews {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0; c.gridy = 0; c.weightx = leftWeight; c.weighty = 1;
         c.fill = GridBagConstraints.BOTH; c.anchor = GridBagConstraints.NORTH;
-        c.insets = new Insets(0, 0, 0, 26); pair.add(left, c);
+        c.insets = new Insets(0, 0, 0, 20); pair.add(left, c);
         c.gridx = 1; c.weightx = 1 - leftWeight; c.insets = new Insets(0, 0, 0, 0); pair.add(right, c);
+        left.setMinimumSize(new Dimension(0, 0)); right.setMinimumSize(new Dimension(0, 0));
         return pair;
     }
 
@@ -64,7 +65,7 @@ public final class StoreViews {
             GridBagConstraints c = new GridBagConstraints();
             c.gridx = i % columns; c.gridy = i / columns; c.weightx = 1;
             c.fill = GridBagConstraints.HORIZONTAL; c.anchor = GridBagConstraints.NORTHWEST;
-            c.insets = new Insets(0, 0, 20, i % columns == columns - 1 ? 0 : 22);
+            c.insets = new Insets(0, 0, 16, i % columns == columns - 1 ? 0 : 20);
             grid.add(fields[i], c);
         }
         GridBagConstraints space = new GridBagConstraints();
@@ -103,19 +104,24 @@ public final class StoreViews {
         table.getColumnModel().getColumn(0).setPreferredWidth(170);
         table.getColumnModel().getColumn(2).setPreferredWidth(160);
         JScrollPane tableScroll = new JScrollPane(table);
-        tableScroll.setPreferredSize(new Dimension(home ? 700 : 1050, 300));
-        JPanel left = AppTheme.panel(new BorderLayout(0, 16));
+        tableScroll.getViewport().setBackground(AppTheme.CARD);
+        tableScroll.setPreferredSize(new Dimension(home ? 590 : 900, 252));
+        tableScroll.setMinimumSize(new Dimension(0, 100));
+        JPanel left = AppTheme.panel(new BorderLayout(0, 14));
         left.add(tableScroll, BorderLayout.CENTER);
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         buttons.setOpaque(false);
         buttons.add(AppTheme.button("Consultar selección", "consultSelected", false, () -> context.navigate.accept(ViewId.CONSULT)));
         buttons.add(AppTheme.button("Modificar selección", "editSelected", false, () -> context.navigate.accept(ViewId.EDIT)));
         left.add(buttons, BorderLayout.SOUTH);
-        JPanel right = AppTheme.panel(new BorderLayout(0, 18));
+        JPanel right = AppTheme.panel(new BorderLayout(0, 12));
+        AppTheme.surface(right, AppTheme.CARD);
+        right.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(AppTheme.LINE),
+                new EmptyBorder(12, 12, 12, 12)));
         JPanel picture = AppTheme.panel(new BorderLayout(0, 8));
         picture.add(new AppTheme.MaterialPanel(), BorderLayout.CENTER);
         picture.add(AppTheme.label("Ambiente ilustrativo de cerámicos.", 11, false, AppTheme.MUTED), BorderLayout.SOUTH);
-        picture.setPreferredSize(new Dimension(290, 210));
+        picture.setPreferredSize(new Dimension(245, 150));
         right.add(picture, BorderLayout.NORTH);
         JPanel specs = AppTheme.column();
         right.add(specs, BorderLayout.CENTER);
@@ -142,7 +148,7 @@ public final class StoreViews {
     private static JPanel product(Context context, boolean edit) {
         JPanel page = page(edit ? "Modificar cerámico" : "Consultar cerámico",
                 edit ? "Actualiza las características del modelo seleccionado." : "Revisa la ficha del modelo seleccionado.", null);
-        JPanel content = AppTheme.panel(new BorderLayout(0, 22));
+        JPanel content = AppTheme.panel(new BorderLayout(0, 16));
         JPanel tabs = AppTheme.panel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         tabs.add(AppTheme.button("Consultar", "goConsult", false, () -> context.navigate.accept(ViewId.CONSULT)));
         tabs.add(AppTheme.button("Modificar", "goEdit", false, () -> context.navigate.accept(ViewId.EDIT)));
@@ -197,8 +203,9 @@ public final class StoreViews {
         MessageBar feedback = new MessageBar();
         JPanel receipt = AppTheme.panel(new BorderLayout());
         receipt.setName("receipt");
-        receipt.setBackground(AppTheme.SURFACE);
-        receipt.setBorder(new EmptyBorder(26, 26, 26, 26));
+        AppTheme.surface(receipt, AppTheme.CARD);
+        receipt.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(AppTheme.LINE), new EmptyBorder(20, 20, 20, 20)));
         Runnable preview = () -> {
             try {
                 SaleResult result = context.store.preview(context.selected, StoreModel.integer(quantity.getText()));
@@ -236,9 +243,9 @@ public final class StoreViews {
 
     private static void receipt(JPanel panel, SaleResult result, boolean registered) {
         panel.removeAll();
-        JPanel body = AppTheme.column(); body.setBackground(AppTheme.SURFACE);
-        body.add(AppTheme.label(registered ? "Venta registrada" : "Resumen de venta", 19, true, AppTheme.INK));
-        body.add(Box.createVerticalStrut(24));
+        JPanel body = AppTheme.column();
+        body.add(AppTheme.label(registered ? "Venta registrada" : "Resumen de venta", 17, true, AppTheme.INK));
+        body.add(Box.createVerticalStrut(16));
         if (result == null) {
             body.add(AppTheme.label("Ingresa una cantidad válida para calcular el importe.", 13, false, AppTheme.MUTED));
         } else {
@@ -247,26 +254,25 @@ public final class StoreViews {
             body.add(infoRow("Importe de compra", AppTheme.money(result.gross), true));
             body.add(infoRow("Descuento (" + result.discountRate.stripTrailingZeros().toPlainString() + " %)", AppTheme.money(result.discount), true));
             body.add(infoRow("Obsequio", result.giftQuantity + " × " + result.gift, true));
-            body.add(Box.createVerticalStrut(24));
-            JPanel total = AppTheme.panel(new BorderLayout(16, 0)); total.setBackground(AppTheme.SURFACE);
+            body.add(Box.createVerticalStrut(18));
+            JPanel total = AppTheme.panel(new BorderLayout(16, 0));
             total.add(AppTheme.label("Total a pagar", 14, false, AppTheme.MUTED), BorderLayout.WEST);
-            JLabel value = AppTheme.label(AppTheme.money(result.total), 29, true, AppTheme.INK);
+            JLabel value = AppTheme.label(AppTheme.money(result.total), 27, true, AppTheme.PRIMARY);
             value.setName("receiptTotal"); total.add(value, BorderLayout.EAST);
             total.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50)); body.add(total);
-            body.add(Box.createVerticalStrut(22));
-            body.add(AppTheme.label("Resumen de cálculo. No es un comprobante fiscal.", 12, false, AppTheme.MUTED));
+            body.add(Box.createVerticalStrut(16));
+            body.add(AppTheme.label("Resumen de cálculo de la operación.", 12, false, AppTheme.MUTED));
         }
         panel.add(body, BorderLayout.NORTH); panel.revalidate(); panel.repaint();
     }
 
     private static JPanel infoRow(String title, String value, boolean soft) {
         JPanel row = AppTheme.panel(new BorderLayout(18, 0));
-        if (soft) row.setBackground(AppTheme.SURFACE);
         row.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, AppTheme.LINE),
-                new EmptyBorder(12, 0, 12, 0)));
-        row.add(AppTheme.label(title, 13, false, AppTheme.MUTED), BorderLayout.WEST);
-        row.add(AppTheme.label(value, 14, true, AppTheme.INK), BorderLayout.EAST);
-        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 54));
+                new EmptyBorder(8, 0, 8, 0)));
+        row.add(AppTheme.label(title, 12, false, AppTheme.MUTED), BorderLayout.WEST);
+        row.add(AppTheme.label(value, 13, true, AppTheme.INK), BorderLayout.EAST);
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
         return row;
     }
 
@@ -278,12 +284,16 @@ public final class StoreViews {
         JPanel top = AppTheme.panel(new BorderLayout(0, 24));
         JPanel selector = AppTheme.panel(new FlowLayout(FlowLayout.LEFT, 0, 0)); selector.add(type);
         top.add(selector, BorderLayout.NORTH);
-        JPanel summary = AppTheme.panel(new FlowLayout(FlowLayout.LEFT, 32, 0));
+        JPanel summary = AppTheme.panel(new GridLayout(1, 3, 0, 0));
+        AppTheme.surface(summary, AppTheme.CARD);
+        summary.setBorder(BorderFactory.createLineBorder(AppTheme.LINE));
         String[][] figures = {{"Ventas registradas", String.valueOf(context.store.totalSales())},
                 {"Cajas vendidas", String.valueOf(context.store.totalQuantity())},
                 {"Importe acumulado", AppTheme.money(context.store.totalAmount())}};
         for (String[] figure : figures) {
             JPanel metric = AppTheme.column();
+            AppTheme.surface(metric, AppTheme.CARD);
+            metric.setBorder(new EmptyBorder(14, 18, 14, 18));
             metric.add(AppTheme.label(figure[0], 12, false, AppTheme.MUTED));
             metric.add(Box.createVerticalStrut(5)); metric.add(AppTheme.label(figure[1], 24, true, AppTheme.INK));
             summary.add(metric);
@@ -327,6 +337,7 @@ public final class StoreViews {
             JTable table = AppTheme.table("reportTable", headers, rows);
             table.getColumnModel().getColumn(0).setPreferredWidth(200);
             JScrollPane tableScroll = new JScrollPane(table);
+            tableScroll.getViewport().setBackground(AppTheme.CARD);
             tableScroll.setPreferredSize(new Dimension(900, rows.length * table.getRowHeight() + 44));
             results.removeAll(); results.add(tableScroll, BorderLayout.CENTER);
             results.revalidate(); results.repaint();
@@ -350,7 +361,7 @@ public final class StoreViews {
             nav.add(button);
         }
         JPanel navHolder = AppTheme.panel(new BorderLayout()); navHolder.add(nav, BorderLayout.NORTH);
-        navHolder.setPreferredSize(new Dimension(205, 210));
+        navHolder.setPreferredSize(new Dimension(170, 190));
         JPanel form = AppTheme.formPanel();
         JPanel fields = AppTheme.column();
         String title, description;
@@ -383,7 +394,7 @@ public final class StoreViews {
             fields.add(AppTheme.field("Cuota diaria (S/)", inputs[0]));
         }
         fields.add(Box.createVerticalGlue());
-        JPanel body = AppTheme.panel(new BorderLayout(0, 24));
+        JPanel body = AppTheme.panel(new BorderLayout(0, 18));
         JPanel formHeading = AppTheme.column();
         formHeading.add(AppTheme.label(title, 19, true, AppTheme.INK)); formHeading.add(Box.createVerticalStrut(8));
         formHeading.add(AppTheme.label(description, 13, false, AppTheme.MUTED));
@@ -405,21 +416,21 @@ public final class StoreViews {
         });
         form.add(withFeedback(body, feedback, AppTheme.actions(
                 AppTheme.button("Cancelar", "cancelConfig", false, () -> context.navigate.accept(ViewId.HOME)), save)), BorderLayout.CENTER);
-        JPanel layout = AppTheme.panel(new BorderLayout(26, 0));
+        JPanel layout = AppTheme.panel(new BorderLayout(20, 0));
         layout.add(navHolder, BorderLayout.WEST); layout.add(form, BorderLayout.CENTER);
         page.add(layout, BorderLayout.CENTER); return page;
     }
 
     private static JPanel configRow(String title, JTextField input, String unit) {
         JPanel row = AppTheme.panel(new BorderLayout(14, 0));
-        row.setBorder(new EmptyBorder(10, 0, 10, 0));
+        row.setBorder(new EmptyBorder(8, 0, 8, 0));
         JLabel label = AppTheme.label(title, 14, false, AppTheme.INK); label.setLabelFor(input);
         input.getAccessibleContext().setAccessibleName(title);
         row.add(label, BorderLayout.CENTER);
         JPanel value = AppTheme.panel(new BorderLayout(12, 0));
-        input.setPreferredSize(new Dimension(130, 44)); value.add(input, BorderLayout.CENTER);
+        input.setPreferredSize(new Dimension(100, 40)); value.add(input, BorderLayout.CENTER);
         value.add(AppTheme.label(unit, 13, false, AppTheme.MUTED), BorderLayout.EAST);
-        row.add(value, BorderLayout.EAST); row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 66));
+        row.add(value, BorderLayout.EAST); row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 58));
         return row;
     }
 
@@ -427,14 +438,24 @@ public final class StoreViews {
         JPanel page = page("Acerca del proyecto", "Aplicación académica de escritorio.", null);
         JTextArea text = new JTextArea("Tienda de cerámicos es el primer proyecto en Java de Wilber Becerra. Reúne consulta y modificación de productos, cálculo de ventas con descuentos y obsequios, y reportes de la operación.\n\nLa aplicación utiliza Java Swing y mantiene los datos en memoria durante la ejecución. El catálogo y los acumulados se reinician cuando se cierra el programa.\n\nVersión original 1.0.0. Desarrollado por Wilber Becerra.");
         text.setEditable(false); text.setLineWrap(true); text.setWrapStyleWord(true);
-        text.setFont(AppTheme.font(16, false)); text.setForeground(AppTheme.MUTED);
-        text.setBackground(Color.WHITE);
-        text.setBorder(new EmptyBorder(0, 0, 24, 140)); text.setName("aboutText");
+        text.setFont(AppTheme.font(15, false)); text.setForeground(AppTheme.MUTED);
+        text.setRows(10);
+        text.setBackground(AppTheme.CARD);
+        text.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(AppTheme.LINE), new EmptyBorder(20, 20, 20, 40)));
+        text.setName("aboutText");
         page.add(text, BorderLayout.CENTER); return page;
     }
 
     private static final class PagePanel extends JPanel implements Scrollable {
-        PagePanel() { super(new BorderLayout()); setBackground(Color.WHITE); }
+        PagePanel() { super(new BorderLayout()); setBackground(AppTheme.CANVAS); }
+        @Override protected void addImpl(Component component, Object constraints, int index) {
+            if (BorderLayout.CENTER.equals(constraints)) {
+                JPanel aligned = AppTheme.panel(new BorderLayout());
+                aligned.add(component, BorderLayout.NORTH);
+                super.addImpl(aligned, constraints, index);
+            } else super.addImpl(component, constraints, index);
+        }
         @Override public Dimension getPreferredScrollableViewportSize() { return getPreferredSize(); }
         @Override public int getScrollableUnitIncrement(Rectangle rect, int orientation, int direction) { return 20; }
         @Override public int getScrollableBlockIncrement(Rectangle rect, int orientation, int direction) { return rect.height - 24; }

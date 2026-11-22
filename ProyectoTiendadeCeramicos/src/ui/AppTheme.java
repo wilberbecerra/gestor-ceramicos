@@ -15,11 +15,16 @@ import javax.swing.table.DefaultTableModel;
 /** Shared typography, materials and layout helpers for the native Swing views. */
 public final class AppTheme {
     public static final Color PRIMARY = new Color(0x285C4E);
-    public static final Color INK = new Color(0x242C29);
-    public static final Color MUTED = new Color(0x58645E);
-    public static final Color LINE = new Color(0xD9E0DB);
-    public static final Color SURFACE = new Color(0xF5F7F5);
-    public static final Color TINT = new Color(0xEDF4EF);
+    public static final Color HEADER = new Color(0x202C2B);
+    public static final Color HEADER_LIGHT = new Color(0x344542);
+    public static final Color PAPER = new Color(0xF5F7F6);
+    public static final Color CANVAS = new Color(0xEEF1F3);
+    public static final Color CARD = Color.WHITE;
+    public static final Color INK = new Color(0x202B32);
+    public static final Color MUTED = new Color(0x606C75);
+    public static final Color LINE = new Color(0xDCE2E6);
+    public static final Color SURFACE = new Color(0xF6F8F9);
+    public static final Color TINT = new Color(0xE9F2ED);
     public static final Color ERROR = new Color(0x9C3333);
     public static final Color ERROR_BACKGROUND = new Color(0xFAEDED);
     private static boolean installed;
@@ -31,20 +36,49 @@ public final class AppTheme {
         if (installed) return;
         FlatLightLaf.setup();
         UIManager.put("defaultFont", font(14, false));
-        UIManager.put("Panel.background", Color.WHITE);
+        UIManager.put("Panel.background", CANVAS);
         UIManager.put("Label.foreground", INK);
+        UIManager.put("Button.background", CARD);
+        UIManager.put("Button.foreground", INK);
+        UIManager.put("TextField.background", Color.WHITE);
         UIManager.put("TextField.foreground", INK);
         UIManager.put("TextField.inactiveBackground", SURFACE);
         UIManager.put("Component.focusColor", PRIMARY);
         UIManager.put("Component.focusedBorderColor", PRIMARY);
         UIManager.put("Component.borderColor", LINE);
-        UIManager.put("Component.arc", 8);
-        UIManager.put("Button.arc", 8);
-        UIManager.put("TextComponent.arc", 8);
+        UIManager.put("Component.arc", 6);
+        UIManager.put("Button.arc", 6);
+        UIManager.put("TextComponent.arc", 6);
         UIManager.put("Button.default.background", PRIMARY);
         UIManager.put("Button.default.foreground", Color.WHITE);
+        UIManager.put("RootPane.background", SURFACE);
+        UIManager.put("TitlePane.background", SURFACE);
+        UIManager.put("TitlePane.inactiveBackground", SURFACE);
+        UIManager.put("TitlePane.foreground", MUTED);
+        UIManager.put("TitlePane.inactiveForeground", MUTED);
+        UIManager.put("MenuBar.background", SURFACE);
+        UIManager.put("MenuBar.foreground", MUTED);
+        UIManager.put("MenuBar.hoverBackground", TINT);
+        UIManager.put("MenuBar.selectionBackground", TINT);
+        UIManager.put("MenuBar.selectionForeground", PRIMARY);
+        UIManager.put("MenuBar.underlineSelectionColor", PRIMARY);
+        UIManager.put("Menu.background", CARD);
+        UIManager.put("Menu.foreground", INK);
+        UIManager.put("MenuItem.background", CARD);
+        UIManager.put("MenuItem.foreground", INK);
+        UIManager.put("PopupMenu.background", CARD);
+        UIManager.put("Table.background", SURFACE);
+        UIManager.put("TableHeader.background", SURFACE);
+        UIManager.put("TableHeader.foreground", MUTED);
+        UIManager.put("TableHeader.separatorColor", SURFACE);
+        UIManager.put("TableHeader.bottomSeparatorColor", LINE);
         UIManager.put("Table.selectionBackground", TINT);
         UIManager.put("Table.selectionForeground", INK);
+        UIManager.put("Table.selectionInactiveBackground", TINT);
+        UIManager.put("Table.selectionInactiveForeground", INK);
+        UIManager.put("ScrollPane.background", CANVAS);
+        UIManager.put("ScrollBar.track", CANVAS);
+        UIManager.put("ScrollBar.thumb", new Color(0xBFC9CE));
         UIManager.put("ScrollPane.border", BorderFactory.createLineBorder(LINE));
         installed = true;
     }
@@ -71,24 +105,41 @@ public final class AppTheme {
 
     public static JPanel panel(LayoutManager layout) {
         JPanel panel = new JPanel(layout);
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(CARD);
+        panel.setOpaque(false);
         return panel;
     }
 
+    public static void surface(JComponent component, Color background) {
+        component.setOpaque(true);
+        component.setBackground(background);
+    }
+
     public static JPanel column() {
-        JPanel panel = panel(null);
+        JPanel panel = new JPanel(null) {
+            @Override protected void addImpl(Component component, Object constraints, int index) {
+                if (component instanceof JComponent) ((JComponent) component).setAlignmentX(Component.LEFT_ALIGNMENT);
+                super.addImpl(component, constraints, index);
+            }
+        };
+        panel.setBackground(CARD);
+        panel.setOpaque(false);
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         return panel;
     }
 
     public static JPanel brand() {
+        return brand(false);
+    }
+
+    public static JPanel brand(boolean onDark) {
         JPanel brand = panel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        brand.add(new CeramicMark(35));
+        brand.add(new CeramicMark(35, onDark));
         brand.add(Box.createHorizontalStrut(13));
         JPanel names = column();
-        names.add(label("Tienda de cerámicos", 20, true, INK));
-        names.add(label("Gestión de ventas", 12, false, MUTED));
+        names.add(label("Tienda de cerámicos", 18, true, onDark ? PAPER : INK));
+        names.add(label("Gestión de ventas", 12, false, onDark ? new Color(0xC4CECA) : MUTED));
         brand.add(names);
         return brand;
     }
@@ -97,8 +148,8 @@ public final class AppTheme {
         JButton button = new JButton(title);
         button.setName(name);
         button.setFont(font(14, primary));
-        button.setMargin(new Insets(10, 17, 10, 17));
-        button.setMinimumSize(new Dimension(90, 42));
+        button.setMargin(new Insets(8, 14, 8, 14));
+        button.setMinimumSize(new Dimension(90, 38));
         if (primary) {
             button.setBackground(PRIMARY);
             button.setForeground(Color.WHITE);
@@ -113,8 +164,8 @@ public final class AppTheme {
         field.setEditable(editable);
         field.setFocusable(editable);
         field.setFont(font(14, false));
-        field.setMargin(new Insets(10, 12, 10, 12));
-        field.setPreferredSize(new Dimension(220, 44));
+        field.setMargin(new Insets(8, 12, 8, 12));
+        field.setPreferredSize(new Dimension(220, 40));
         if (!editable) field.setBackground(SURFACE);
         return field;
     }
@@ -123,7 +174,7 @@ public final class AppTheme {
         JComboBox<T> combo = new JComboBox<>(items);
         combo.setName(name);
         combo.setFont(font(14, false));
-        combo.setPreferredSize(new Dimension(280, 44));
+        combo.setPreferredSize(new Dimension(240, 40));
         return combo;
     }
 
@@ -140,9 +191,9 @@ public final class AppTheme {
 
     public static JPanel heading(String title, String subtitle, JComponent action) {
         JPanel panel = panel(new BorderLayout(20, 0));
-        panel.setBorder(new EmptyBorder(0, 0, 24, 0));
+        panel.setBorder(new EmptyBorder(0, 0, 20, 0));
         JPanel text = column();
-        text.add(label(title, 27, true, INK));
+        text.add(label(title, 25, true, INK));
         text.add(Box.createVerticalStrut(7));
         text.add(label(subtitle, 14, false, MUTED));
         panel.add(text, BorderLayout.CENTER);
@@ -156,15 +207,16 @@ public final class AppTheme {
 
     public static JPanel formPanel() {
         JPanel panel = panel(new BorderLayout(0, 20));
+        surface(panel, CARD);
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(LINE), new EmptyBorder(24, 24, 24, 24)));
+                BorderFactory.createLineBorder(LINE), new EmptyBorder(20, 20, 20, 20)));
         return panel;
     }
 
     public static JPanel actions(JComponent... buttons) {
         JPanel panel = panel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(1, 0, 0, 0, LINE), new EmptyBorder(20, 0, 0, 0)));
+                BorderFactory.createMatteBorder(1, 0, 0, 0, LINE), new EmptyBorder(16, 0, 0, 0)));
         for (JComponent button : buttons) panel.add(button);
         return panel;
     }
@@ -173,25 +225,35 @@ public final class AppTheme {
         JScrollPane scroll = new JScrollPane(content);
         scroll.setBorder(null);
         scroll.getVerticalScrollBar().setUnitIncrement(18);
-        scroll.getViewport().setBackground(Color.WHITE);
+        scroll.getViewport().setBackground(CANVAS);
         return scroll;
     }
 
     public static JTable table(String name, String[] headers, Object[][] rows) {
         JTable table = new JTable(new DefaultTableModel(rows, headers) {
             @Override public boolean isCellEditable(int row, int col) { return false; }
-        });
+        }) {
+            @Override public Component prepareRenderer(javax.swing.table.TableCellRenderer renderer, int row, int column) {
+                Component cell = super.prepareRenderer(renderer, row, column);
+                cell.setBackground(isRowSelected(row) ? TINT : row % 2 == 0 ? CARD : SURFACE);
+                cell.setForeground(INK);
+                return cell;
+            }
+        };
         table.setName(name);
         table.setFont(font(14, false));
-        table.setRowHeight(46);
+        table.setRowHeight(42);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setShowHorizontalLines(true);
         table.setShowVerticalLines(false);
         table.setGridColor(LINE);
         table.setIntercellSpacing(new Dimension(0, 1));
         table.setFillsViewportHeight(true);
-        table.getTableHeader().setFont(font(12, false));
-        table.getTableHeader().setPreferredSize(new Dimension(0, 42));
+        table.setBackground(CARD);
+        table.getTableHeader().setBackground(SURFACE);
+        table.getTableHeader().setForeground(MUTED);
+        table.getTableHeader().setFont(font(12, true));
+        table.getTableHeader().setPreferredSize(new Dimension(0, 40));
         table.getTableHeader().setReorderingAllowed(false);
         DefaultTableCellRenderer left = new DefaultTableCellRenderer();
         left.setBorder(new EmptyBorder(0, 12, 0, 12));
@@ -233,13 +295,18 @@ public final class AppTheme {
     }
 
     public static final class CeramicMark extends JComponent {
-        public CeramicMark(int size) { setPreferredSize(new Dimension(size, size)); }
+        private final boolean onDark;
+        public CeramicMark(int size) { this(size, false); }
+        public CeramicMark(int size, boolean onDark) {
+            this.onDark = onDark;
+            setPreferredSize(new Dimension(size, size));
+        }
         @Override protected void paintComponent(Graphics graphics) {
             Graphics2D g = (Graphics2D) graphics.create();
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             int cell = (Math.min(getWidth(), getHeight()) - 4) / 2;
             for (int i = 0; i < 4; i++) {
-                g.setColor(i == 3 ? MUTED : PRIMARY);
+                g.setColor(onDark ? (i == 3 ? new Color(0x92B0A2) : PAPER) : (i == 3 ? new Color(0x92B0A2) : PRIMARY));
                 g.fillRoundRect((i % 2) * (cell + 4), (i / 2) * (cell + 4), cell, cell, 3, 3);
             }
             g.dispose();

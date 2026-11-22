@@ -118,7 +118,7 @@ public final class CeramicosCheck {
         // Render the native hierarchy at a documented review size, independently
         // of the monitor's work area. Small live windows keep their scrollbars.
         if (!(frame instanceof Login)) {
-            root.setSize(1264, Math.max(900, root.getPreferredSize().height));
+            root.setSize(1264, Math.max(760, root.getPreferredSize().height));
             for (int i = 0; i < 3; i++) layout(root);
         }
         BufferedImage image = new BufferedImage(root.getWidth(), root.getHeight(), BufferedImage.TYPE_INT_RGB);
