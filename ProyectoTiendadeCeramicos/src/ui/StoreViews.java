@@ -436,22 +436,81 @@ public final class StoreViews {
 
     private static JPanel about() {
         JPanel page = page("Acerca del proyecto", "Versión y especificaciones de la aplicación.", null);
-        JTextArea text = new JTextArea("Versión original 1.0.0\n\n"
-                + "Aplicación de escritorio para la consulta de productos y la gestión de ventas de cerámicos.\n\n"
-                + "Lenguaje: Java, con compatibilidad Java 15.\n"
-                + "Interfaz: Java Swing y FlatLaf 3.8.\n"
-                + "Entorno de desarrollo: Eclipse IDE.\n"
-                + "Almacenamiento: datos en memoria durante la ejecución, sin base de datos.\n\n"
-                + "Funciones: consulta, modificación y listado de productos; ventas con descuentos y obsequios; reportes y configuración de reglas de venta.\n\n"
-                + "El catálogo, la configuración y los acumulados se restablecen al cerrar la aplicación.");
-        text.setEditable(false); text.setLineWrap(true); text.setWrapStyleWord(true);
-        text.setFont(AppTheme.font(15, false)); text.setForeground(AppTheme.MUTED);
-        text.setRows(14);
-        text.setBackground(AppTheme.CARD);
-        text.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(AppTheme.LINE), new EmptyBorder(20, 20, 20, 40)));
-        text.setName("aboutText");
-        page.add(text, BorderLayout.CENTER); return page;
+        JPanel content = AppTheme.panel(new BorderLayout(0, 18));
+        content.setName("aboutOverview");
+
+        JPanel identity = AppTheme.formPanel();
+        identity.setLayout(new BorderLayout(20, 0));
+        JPanel symbol = AppTheme.panel(new GridBagLayout());
+        AppTheme.surface(symbol, AppTheme.TINT);
+        symbol.setBorder(new EmptyBorder(14, 14, 14, 14));
+        symbol.add(new AppTheme.CeramicMark(48));
+        identity.add(symbol, BorderLayout.WEST);
+
+        JPanel introduction = AppTheme.column();
+        introduction.add(AppTheme.label("Tienda de cerámicos", 24, true, AppTheme.INK));
+        introduction.add(Box.createVerticalStrut(6));
+        introduction.add(AppTheme.label("Gestión de productos y ventas", 14, false, AppTheme.MUTED));
+        JPanel introductionHolder = AppTheme.panel(new BorderLayout());
+        introductionHolder.add(introduction, BorderLayout.CENTER);
+        identity.add(introductionHolder, BorderLayout.CENTER);
+
+        JLabel version = AppTheme.label("Versión original 1.0.0", 12, true, AppTheme.PRIMARY);
+        version.setName("aboutVersion");
+        AppTheme.surface(version, AppTheme.TINT);
+        version.setBorder(new EmptyBorder(8, 12, 8, 12));
+        JPanel versionHolder = AppTheme.panel(new BorderLayout());
+        versionHolder.add(version, BorderLayout.NORTH);
+        identity.add(versionHolder, BorderLayout.EAST);
+        content.add(identity, BorderLayout.NORTH);
+
+        JPanel specifications = AppTheme.formPanel();
+        specifications.add(AppTheme.label("Especificaciones", 17, true, AppTheme.INK), BorderLayout.NORTH);
+        JPanel details = AppTheme.column();
+        details.add(infoRow("Plataforma", "Aplicación de escritorio", false));
+        details.add(infoRow("Lenguaje", "Java · compatible con Java 15", false));
+        details.add(infoRow("Interfaz", "Java Swing", false));
+        details.add(infoRow("Tema visual", "FlatLaf 3.8", false));
+        details.add(infoRow("Entorno", "Eclipse IDE", false));
+        details.add(infoRow("Almacenamiento", "En memoria", false));
+        specifications.add(details, BorderLayout.CENTER);
+
+        JPanel capabilities = AppTheme.formPanel();
+        capabilities.add(AppTheme.label("Funciones de la aplicación", 17, true, AppTheme.INK), BorderLayout.NORTH);
+        JPanel modules = AppTheme.panel(new GridLayout(2, 2, 20, 22));
+        modules.add(aboutModule("Productos", "Consulta, modificación y listado de los modelos del catálogo."));
+        modules.add(aboutModule("Ventas", "Cálculo de importes, descuentos y obsequios por cantidad."));
+        modules.add(aboutModule("Reportes", "Ventas por modelo, comparaciones y estadísticas de precios."));
+        modules.add(aboutModule("Configuración", "Reglas de venta, cantidad óptima y cuota diaria."));
+        capabilities.add(modules, BorderLayout.CENTER);
+        content.add(pair(specifications, capabilities, .48), BorderLayout.CENTER);
+
+        JPanel storage = AppTheme.panel(new BorderLayout(0, 6));
+        AppTheme.surface(storage, AppTheme.TINT);
+        storage.setBorder(new EmptyBorder(16, 20, 16, 20));
+        storage.add(AppTheme.label("Datos durante la ejecución", 14, true, AppTheme.PRIMARY), BorderLayout.NORTH);
+        JTextArea storageNote = aboutCopy("El catálogo, la configuración y los acumulados se restablecen al cerrar la aplicación. No utiliza una base de datos.", 2);
+        storageNote.setName("aboutStorage");
+        storage.add(storageNote, BorderLayout.CENTER);
+        content.add(storage, BorderLayout.SOUTH);
+        page.add(content, BorderLayout.CENTER); return page;
+    }
+
+    private static JPanel aboutModule(String title, String description) {
+        JPanel module = AppTheme.panel(new BorderLayout(0, 8));
+        module.add(AppTheme.label(title, 14, true, AppTheme.INK), BorderLayout.NORTH);
+        module.add(aboutCopy(description, 3), BorderLayout.CENTER);
+        return module;
+    }
+
+    private static JTextArea aboutCopy(String text, int rows) {
+        JTextArea copy = new JTextArea(text);
+        copy.setEditable(false);
+        copy.setLineWrap(true); copy.setWrapStyleWord(true);
+        copy.setFont(AppTheme.font(13, false)); copy.setForeground(AppTheme.MUTED);
+        copy.setRows(rows); copy.setOpaque(false);
+        copy.setBorder(BorderFactory.createEmptyBorder());
+        return copy;
     }
 
     private static final class PagePanel extends JPanel implements Scrollable {
