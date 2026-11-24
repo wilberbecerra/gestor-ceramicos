@@ -2,7 +2,7 @@
   <img src="./recursos/actual/marca.svg" width="64" height="64" alt="Símbolo de cuatro piezas cerámicas">
 </p>
 
-<h1 align="center">Gestor de Tienda de Cerámicos</h1>
+<h1 align="center">Sistema de Gestión de Productos y Ventas de Cerámicos</h1>
 
 <p align="center">
   Aplicación de escritorio para consultar productos, registrar ventas y evaluar resultados.<br>
